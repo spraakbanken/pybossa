@@ -33,7 +33,7 @@ log
 dat/GeoIP.dat
 *.ini
 pybossa/themes/pybossa-default-theme/
-pybossa/themes/spraakbanken
+!pybossa/themes/spraakbanken
 dist/*
 pybossa/themes/crowdcrafting-theme/
 pybossa/translations
