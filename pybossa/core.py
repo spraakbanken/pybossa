@@ -151,9 +151,8 @@ def setup_theme(app):
 
     # Add the updated rule.
     app.add_url_rule('{static_url_path}/<path:filename>'.format(static_url_path=app.static_url_path),
-                 endpoint='static',
-                 view_func=app.send_static_file)
-
+                     endpoint='static',
+                     view_func=app.send_static_file)
 
     # Update static_url_path if set in settings
     if app.config.get('STATIC_URL_PATH'):
