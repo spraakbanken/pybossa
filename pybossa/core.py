@@ -339,18 +339,18 @@ def setup_blueprints(app):
     from pybossa.view.home import blueprint as home
     from pybossa.view.uploads import blueprint as uploads
     from pybossa.view.amazon import blueprint as amazon
-
-    blueprints = [{'handler': home, 'url_prefix': '/'},
-                  {'handler': api,  'url_prefix': '/api'},
-                  {'handler': account, 'url_prefix': '/account'},
-                  {'handler': projects, 'url_prefix': '/project'},
-                  {'handler': admin, 'url_prefix': '/admin'},
-                  {'handler': announcements, 'url_prefix': '/announcements'},
-                  {'handler': leaderboard, 'url_prefix': '/leaderboard'},
-                  {'handler': helper, 'url_prefix': '/help'},
-                  {'handler': stats, 'url_prefix': '/stats'},
-                  {'handler': uploads, 'url_prefix': '/uploads'},
-                  {'handler': amazon, 'url_prefix': '/amazon'},
+    URL_PREFIX = '/ws/tools/crowd-tasking'
+    blueprints = [{'handler': home, 'url_prefix': URL_PREFIX + '/'},
+                  {'handler': api,  'url_prefix': URL_PREFIX + '/api'},
+                  {'handler': account, 'url_prefix': URL_PREFIX + '/account'},
+                  {'handler': projects, 'url_prefix': URL_PREFIX + '/project'},
+                  {'handler': admin, 'url_prefix': URL_PREFIX + '/admin'},
+                  {'handler': announcements, 'url_prefix': URL_PREFIX + '/announcements'},
+                  {'handler': leaderboard, 'url_prefix': URL_PREFIX + '/leaderboard'},
+                  {'handler': helper, 'url_prefix': URL_PREFIX + '/help'},
+                  {'handler': stats, 'url_prefix': URL_PREFIX + '/stats'},
+                  {'handler': uploads, 'url_prefix': URL_PREFIX + '/uploads'},
+                  {'handler': amazon, 'url_prefix': URL_PREFIX + '/amazon'},
                   ]
 
     for bp in blueprints:
