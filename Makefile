@@ -1,2 +1,2 @@
 setup:
-	cd pybossa; ln -s themes/default/translations
+	cd pybossa; ln -s themes/spraakbanken/translations
