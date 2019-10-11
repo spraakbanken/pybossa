@@ -17,6 +17,8 @@
 # along with PYBOSSA.  If not, see <http://www.gnu.org/licenses/>.
 import json
 from time import time
+import os
+
 from pybossa.core import sentinel
 try:
     import cPickle as pickle
@@ -37,9 +39,11 @@ def update_feed(obj):
         pipeline.zadd(FEED_KEY, time(), serialized_object)
         pipeline.execute()
 
+
 def get_update_feed():
     """Return update feed list."""
     feed = []
+
     if util.redis_cache_is_enabled():
         data = sentinel.slave.zrevrange(FEED_KEY, 0, 99, withscores=True)
         for u in data:
