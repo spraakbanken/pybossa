@@ -15,12 +15,22 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with PYBOSSA. If not, see <http://www.gnu.org/licenses/>.
+import sys
+
 from pybossa.core import create_app
 
 if __name__ == "__main__":  # pragma: no cover
     app = create_app()
     #logging.basicConfig(level=logging.NOTSET)
-    app.run(host=app.config['HOST'], port=app.config['PORT'],
+    if len(sys.argv) > 1 and sys.argv[1] == 'run-production':
+        from gevent import monkey
+        monkey.patch_all()
+        from gevent.pywsgi import WSGIServer
+        port = app.config['PORT']
+        WSGIServer(('0.0.0.0', port), app).serve_forever()
+    else:
+        # run in debug mode
+        app.run(host=app.config['HOST'], port=app.config['PORT'],
             debug=app.config.get('DEBUG', True))
 else:
     app = create_app()
