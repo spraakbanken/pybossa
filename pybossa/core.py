@@ -35,9 +35,6 @@ from pybossa.news import get_news
 from pybossa.messages import *
 
 
-STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
-
-
 def create_app(run_as_server=True):
     """Create web app."""
     app = Flask(__name__)
@@ -135,21 +132,6 @@ def setup_theme(app):
     theme = app.config['THEME']
     app.template_folder = os.path.join('themes', theme, 'templates')
     app.static_folder = os.path.join('themes', theme, 'static')
-    app.static_url_path = STATIC_URL_PATH
-
-    # Remove the old rule from Map._rules.
-    for rule in app.url_map.iter_rules('static'):
-        app.url_map._rules.remove(rule)  # There is probably only one.
-
-    # Remove the old rule from Map._rules_by_endpoint. In this case we can just
-    # start fresh.
-    app.url_map._rules_by_endpoint['static'] = []
-
-    # Add the updated rule.
-    app.add_url_rule('{static_url_path}/<path:filename>'.format(static_url_path=app.static_url_path),
-                 endpoint='static',
-                 view_func=app.send_static_file)
-
 
     # Update static_url_path if set in settings
     if app.config.get('STATIC_URL_PATH'):
