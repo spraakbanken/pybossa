@@ -361,13 +361,25 @@ def setup_blueprints(app):
                   {'handler': uploads, 'url_prefix': '/uploads'},
                   {'handler': amazon, 'url_prefix': '/amazon'},
                   ]
-
+    app_url_prefix = app.config.get('URL_PREFIX', '')
     for bp in blueprints:
-        app.register_blueprint(bp['handler'], url_prefix=bp['url_prefix'])
+        app.register_blueprint(
+            bp['handler'],
+            url_prefix='{app_url_prefix}{url_prefix}'.format(
+                app_url_prefix=app_url_prefix,
+                url_prefix=bp['url_prefix']
+            )
+        )
 
     from rq_dashboard import RQDashboard
-    RQDashboard(app, url_prefix='/admin/rq', auth_handler=current_user,
-                redis_conn=sentinel.master)
+    RQDashboard(
+        app,
+        url_prefix='{app_url_prefix}/admin/rq'.format(
+            app_url_prefix=app_url_prefix
+        ),
+        auth_handler=current_user,
+        redis_conn=sentinel.master
+    )
 
     if app.config.get('STATIC_URL_PATH') or app.config.get('URL_PREFIX'):
         from flask import send_from_directory
