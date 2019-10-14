@@ -125,6 +125,9 @@ def configure_app(app):
             dict(slave=app.config.get('SQLALCHEMY_DATABASE_URI'))
     app.url_map.strict_slashes = app.config.get('STRICT_SLASHES')
 
+    if app.config.get('URL_PREFIX'):
+        app.config['APPLICATION_ROOT'] = app.config['URL_PREFIX']
+
 
 def setup_json_serializer(app):
     app.json_encoder = JSONEncoder
@@ -154,8 +157,11 @@ def setup_theme(app):
         app.static_folder = os.path.join('themes', theme, 'static')
 
     # Update static_url_path if set in settings
-    if app.config.get('STATIC_URL_PATH'):
-        app.static_url_path = app.config['STATIC_URL_PATH']
+    if app.config.get('STATIC_URL_PATH') or app.config.get('URL_PREFIX'):
+        if app.config.get('STATIC_URL_PATH'):
+            app.static_url_path = app.config['STATIC_URL_PATH']
+        else:
+            app.static_url_path = os.path.join(app.config['URL_PREFIX'], 'static')
 
         # Remove the old rule from Map._rules.
         for rule in app.url_map.iter_rules('static'):
@@ -363,7 +369,7 @@ def setup_blueprints(app):
     RQDashboard(app, url_prefix='/admin/rq', auth_handler=current_user,
                 redis_conn=sentinel.master)
 
-    if app.config.get('STATIC_URL_PATH'):
+    if app.config.get('STATIC_URL_PATH') or app.config.get('URL_PREFIX'):
         from flask import send_from_directory
 
         @app.route('/static/<path:path>')
