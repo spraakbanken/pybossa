@@ -36,7 +36,7 @@ from pybossa.messages import *
 from pybossa import util
 
 
-URL_PREFIX = '/ws/tools/crowd-tasking'
+STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
 
 
 def create_app(run_as_server=True):
@@ -137,8 +137,23 @@ def setup_sse(app):
 def setup_theme(app):
     """Configure theme for PYBOSSA app."""
     theme = app.config['THEME']
-    app.template_folder = os.path.join(URL_PREFIX, 'themes', theme, 'templates')
-    app.static_folder = os.path.join(URL_PREFIX, 'themes', theme, 'static')
+    app.template_folder = os.path.join('themes', theme, 'templates')
+    app.static_folder = os.path.join('themes', theme, 'static')
+    app.static_url_path = STATIC_URL_PATH
+
+    # Remove the old rule from Map._rules.
+    for rule in app.url_map.iter_rules('static'):
+        app.url_map._rules.remove(rule)  # There is probably only one.
+
+    # Remove the old rule from Map._rules_by_endpoint. In this case we can just
+    # start fresh.
+    app.url_map._rules_by_endpoint['static'] = []
+
+    # Add the updated rule.
+    app.add_url_rule('{static_url_path}/<path:filename>'.format(static_url_path=app.static_url_path),
+                 endpoint='static',
+                 view_func=app.send_static_file)
+
 
     # Update static_url_path if set in settings
     if app.config.get('STATIC_URL_PATH'):
@@ -315,6 +330,8 @@ def setup_babel(app):
 
 def setup_blueprints(app):
     """Configure blueprints."""
+    from flask import send_from_directory
+
     from pybossa.api import blueprint as api
     from pybossa.view.account import blueprint as account
     from pybossa.view.projects import blueprint as projects
@@ -327,17 +344,17 @@ def setup_blueprints(app):
     from pybossa.view.uploads import blueprint as uploads
     from pybossa.view.amazon import blueprint as amazon
 
-    blueprints = [{'handler': home, 'url_prefix': URL_PREFIX + '/'},
-                  {'handler': api,  'url_prefix': URL_PREFIX + '/api'},
-                  {'handler': account, 'url_prefix': URL_PREFIX + '/account'},
-                  {'handler': projects, 'url_prefix': URL_PREFIX + '/project'},
-                  {'handler': admin, 'url_prefix': URL_PREFIX + '/admin'},
-                  {'handler': announcements, 'url_prefix': URL_PREFIX + '/announcements'},
-                  {'handler': leaderboard, 'url_prefix': URL_PREFIX + '/leaderboard'},
-                  {'handler': helper, 'url_prefix': URL_PREFIX + '/help'},
-                  {'handler': stats, 'url_prefix': URL_PREFIX + '/stats'},
-                  {'handler': uploads, 'url_prefix': URL_PREFIX + '/uploads'},
-                  {'handler': amazon, 'url_prefix': URL_PREFIX + '/amazon'},
+    blueprints = [{'handler': home, 'url_prefix': '/'},
+                  {'handler': api,  'url_prefix': '/api'},
+                  {'handler': account, 'url_prefix': '/account'},
+                  {'handler': projects, 'url_prefix': '/project'},
+                  {'handler': admin, 'url_prefix': '/admin'},
+                  {'handler': announcements, 'url_prefix': '/announcements'},
+                  {'handler': leaderboard, 'url_prefix': '/leaderboard'},
+                  {'handler': helper, 'url_prefix': '/help'},
+                  {'handler': stats, 'url_prefix': '/stats'},
+                  {'handler': uploads, 'url_prefix': '/uploads'},
+                  {'handler': amazon, 'url_prefix': '/amazon'},
                   ]
 
     for bp in blueprints:
