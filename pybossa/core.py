@@ -39,6 +39,9 @@ from pybossa import util
 STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
 
 
+URL_PREFIX = '/ws/tools/crowd-tasking'
+
+
 def create_app(run_as_server=True):
     """Create web app."""
     app = Flask(__name__)
@@ -137,38 +140,9 @@ def setup_sse(app):
 def setup_theme(app):
     """Configure theme for PYBOSSA app."""
     theme = app.config['THEME']
-    app.template_folder = os.path.join('themes', theme, 'templates')
-    app.static_folder = os.path.join('themes', theme, 'static')
-    app.static_url_path = STATIC_URL_PATH
-
-    # Remove the old rule from Map._rules.
-    for rule in app.url_map.iter_rules('static'):
-        app.url_map._rules.remove(rule)  # There is probably only one.
-
-    # Remove the old rule from Map._rules_by_endpoint. In this case we can just
-    # start fresh.
-    app.url_map._rules_by_endpoint['static'] = []
-
-    # Add the updated rule.
-    app.add_url_rule('{static_url_path}/<path:filename>'.format(static_url_path=app.static_url_path),
-                     endpoint='static',
-                     view_func=app.send_static_file)
-
-    # Update static_url_path if set in settings
-    if app.config.get('STATIC_URL_PATH'):
-        app.static_url_path = app.config['STATIC_URL_PATH']
-
-        # Remove the old rule from Map._rules.
-        for rule in app.url_map.iter_rules('static'):
-            app.url_map._rules.remove(rule)  # There is probably only one.
-
-        # Remove the old rule from Map._rules_by_endpoint.
-        app.url_map._rules_by_endpoint['static'] = []
-
-        # Add the new rule.
-        app.add_url_rule('{static_url_path}/<path:filename>'.format(static_url_path=app.static_url_path),
-                         endpoint='static',
-                         view_func=app.send_static_file)
+    app.template_folder = os.path.join(
+        URL_PREFIX, 'themes', theme, 'templates')
+    app.static_folder = os.path.join(URL_PREFIX, 'themes', theme, 'static')
 
 
 def setup_uploader(app):
@@ -342,13 +316,14 @@ def setup_blueprints(app):
     from pybossa.view.home import blueprint as home
     from pybossa.view.uploads import blueprint as uploads
     from pybossa.view.amazon import blueprint as amazon
-    URL_PREFIX = '/ws/tools/crowd-tasking'
+
     blueprints = [{'handler': home, 'url_prefix': URL_PREFIX + '/'},
                   {'handler': api,  'url_prefix': URL_PREFIX + '/api'},
                   {'handler': account, 'url_prefix': URL_PREFIX + '/account'},
                   {'handler': projects, 'url_prefix': URL_PREFIX + '/project'},
                   {'handler': admin, 'url_prefix': URL_PREFIX + '/admin'},
-                  {'handler': announcements, 'url_prefix': URL_PREFIX + '/announcements'},
+                  {'handler': announcements,
+                      'url_prefix': URL_PREFIX + '/announcements'},
                   {'handler': leaderboard, 'url_prefix': URL_PREFIX + '/leaderboard'},
                   {'handler': helper, 'url_prefix': URL_PREFIX + '/help'},
                   {'handler': stats, 'url_prefix': URL_PREFIX + '/stats'},
