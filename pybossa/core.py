@@ -42,6 +42,9 @@ STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
 STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
 
 
+URL_PREFIX = '/ws/tools/crowd-tasking'
+
+
 def create_app(run_as_server=True):
     """Create web app."""
     app = Flask(__name__)
@@ -336,7 +339,7 @@ def setup_blueprints(app):
     from pybossa.view.home import blueprint as home
     from pybossa.view.uploads import blueprint as uploads
     from pybossa.view.amazon import blueprint as amazon
-    URL_PREFIX = '/ws/tools/crowd-tasking'
+
     blueprints = [{'handler': home, 'url_prefix': URL_PREFIX + '/'},
                   {'handler': api,  'url_prefix': URL_PREFIX + '/api'},
                   {'handler': account, 'url_prefix': URL_PREFIX + '/account'},
