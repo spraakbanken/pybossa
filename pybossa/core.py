@@ -35,6 +35,9 @@ from pybossa.news import get_news
 from pybossa.messages import *
 
 
+URL_PREFIX = '/ws/tools/crowd-tasking'
+
+
 def create_app(run_as_server=True):
     """Create web app."""
     app = Flask(__name__)
@@ -130,8 +133,8 @@ def setup_sse(app):
 def setup_theme(app):
     """Configure theme for PYBOSSA app."""
     theme = app.config['THEME']
-    app.template_folder = os.path.join('themes', theme, 'templates')
-    app.static_folder = os.path.join('themes', theme, 'static')
+    app.template_folder = os.path.join(URL_PREFIX, 'themes', theme, 'templates')
+    app.static_folder = os.path.join(URL_PREFIX, 'themes', theme, 'static')
 
 
 def setup_uploader(app):
@@ -303,7 +306,7 @@ def setup_blueprints(app):
     from pybossa.view.home import blueprint as home
     from pybossa.view.uploads import blueprint as uploads
     from pybossa.view.amazon import blueprint as amazon
-    URL_PREFIX = '/ws/tools/crowd-tasking'
+
     blueprints = [{'handler': home, 'url_prefix': URL_PREFIX + '/'},
                   {'handler': api,  'url_prefix': URL_PREFIX + '/api'},
                   {'handler': account, 'url_prefix': URL_PREFIX + '/account'},
