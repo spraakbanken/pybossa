@@ -39,7 +39,7 @@ from pybossa import util
 STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
 
 
-URL_PREFIX = '/ws/tools/crowd-tasking'
+STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
 
 
 def create_app(run_as_server=True):
@@ -317,6 +317,7 @@ def setup_blueprints(app):
     from pybossa.view.uploads import blueprint as uploads
     from pybossa.view.amazon import blueprint as amazon
 
+<<<<<<< HEAD
     blueprints = [{'handler': home, 'url_prefix': URL_PREFIX + '/'},
                   {'handler': api,  'url_prefix': URL_PREFIX + '/api'},
                   {'handler': account, 'url_prefix': URL_PREFIX + '/account'},
@@ -329,6 +330,19 @@ def setup_blueprints(app):
                   {'handler': stats, 'url_prefix': URL_PREFIX + '/stats'},
                   {'handler': uploads, 'url_prefix': URL_PREFIX + '/uploads'},
                   {'handler': amazon, 'url_prefix': URL_PREFIX + '/amazon'},
+=======
+    blueprints = [{'handler': home, 'url_prefix': '/'},
+                  {'handler': api,  'url_prefix': '/api'},
+                  {'handler': account, 'url_prefix': '/account'},
+                  {'handler': projects, 'url_prefix': '/project'},
+                  {'handler': admin, 'url_prefix': '/admin'},
+                  {'handler': announcements, 'url_prefix': '/announcements'},
+                  {'handler': leaderboard, 'url_prefix': '/leaderboard'},
+                  {'handler': helper, 'url_prefix': '/help'},
+                  {'handler': stats, 'url_prefix': '/stats'},
+                  {'handler': uploads, 'url_prefix': '/uploads'},
+                  {'handler': amazon, 'url_prefix': '/amazon'},
+>>>>>>> enable static_url_path usage
                   ]
 
     for bp in blueprints:
@@ -338,12 +352,19 @@ def setup_blueprints(app):
     RQDashboard(app, url_prefix='/admin/rq', auth_handler=current_user,
                 redis_conn=sentinel.master)
 
+<<<<<<< HEAD
     if app.config.get('STATIC_URL_PATH'):
         from flask import send_from_directory
 
         @app.route('/static/<path:path>')
         def send_static(path):
             return send_from_directory(app.static_folder, path)
+=======
+    @app.route('/static/<path:path>')
+    def send_static(path):
+        return send_from_directory(app.static_folder, path)
+
+>>>>>>> enable static_url_path usage
 
 
 def setup_external_services(app):
