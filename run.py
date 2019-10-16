@@ -19,6 +19,24 @@ import sys
 
 from pybossa.core import create_app
 
+
+class PrefixMiddleware(object):
+
+    def __init__(self, app, prefix=''):
+        self.app = app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+
+        if environ['PATH_INFO'].startswith(self.prefix):
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+            environ['SCRIPT_NAME'] = self.prefix
+            return self.app(environ, start_response)
+        else:
+            start_response('404', [('Content-Type', 'text/plain')])
+            return ["This url does not belong to the app.".encode()]
+
+
 if __name__ == "__main__":  # pragma: no cover
     app = create_app()
     #logging.basicConfig(level=logging.NOTSET)
@@ -27,6 +45,8 @@ if __name__ == "__main__":  # pragma: no cover
         monkey.patch_all()
         from gevent.pywsgi import WSGIServer
         port = app.config['PORT']
+        if app.config.get('URL_PREFIX'):
+            app.wsgi_app = PrefixMiddleware(app.wsgi_app, app.config['URL_PREFIX'])
         WSGIServer(('0.0.0.0', port), app).serve_forever()
     else:
         # run in debug mode
