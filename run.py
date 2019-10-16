@@ -20,23 +20,6 @@ import sys
 from pybossa.core import create_app
 
 
-class PrefixMiddleware(object):
-
-    def __init__(self, app, prefix=''):
-        self.app = app
-        self.prefix = prefix
-
-    def __call__(self, environ, start_response):
-        print('environ = {}'.format(environ))
-        if environ['PATH_INFO'].startswith(self.prefix):
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
-            environ['SCRIPT_NAME'] = self.prefix
-            return self.app(environ, start_response)
-        else:
-            start_response('404', [('Content-Type', 'text/plain')])
-            return ["This url does not belong to the app.".encode()]
-
-
 class ReverseProxied(object):
 
     def __init__(self, app, script_name=None, scheme=None, server=None):
@@ -69,13 +52,11 @@ if __name__ == "__main__":  # pragma: no cover
         monkey.patch_all()
         from gevent.pywsgi import WSGIServer
 
-        print("app.config['URL_PREFIX'] = {}".format(app.config.get('URL_PREFIX')))
         print("app.config['APPLICATION_ROOT'] = {}".format(app.config.get('APPLICATION_ROOT')))
 
         port = app.config['PORT']
-        if app.config.get('URL_PREFIX'):
-            app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=app.config['URL_PREFIX'])
-            # app.wsgi_app = PrefixMiddleware(app.wsgi_app, app.config['URL_PREFIX'])
+        if app.config.get('APPLICATION_ROOT'):
+            app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=app.config['APPLICATION_ROOT'])
         WSGIServer(('0.0.0.0', port), app).serve_forever()
     else:
         # run in debug mode
