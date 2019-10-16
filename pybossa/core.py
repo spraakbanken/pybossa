@@ -119,9 +119,6 @@ def configure_app(app):
             dict(slave=app.config.get('SQLALCHEMY_DATABASE_URI'))
     app.url_map.strict_slashes = app.config.get('STRICT_SLASHES')
 
-    if app.config.get('URL_PREFIX'):
-        app.config['APPLICATION_ROOT'] = app.config['URL_PREFIX']
-
 
 def setup_json_serializer(app):
     app.json_encoder = JSONEncoder
@@ -145,25 +142,6 @@ def setup_theme(app):
     theme = app.config['THEME']
     app.template_folder = os.path.join('themes', theme, 'templates')
     app.static_folder = os.path.join('themes', theme, 'static')
-
-    # Update static_url_path if set in settings
-    # if app.config.get('STATIC_URL_PATH') or app.config.get('APPLICATION_ROOT'):
-    #     if app.config.get('STATIC_URL_PATH'):
-    #         app.static_url_path = app.config['STATIC_URL_PATH']
-    #     else:
-    #         app.static_url_path = os.path.join(app.config['APPLICATION_ROOT'], 'static')
-
-    #     # Remove the old rule from Map._rules.
-    #     for rule in app.url_map.iter_rules('static'):
-    #         app.url_map._rules.remove(rule)  # There is probably only one.
-
-    #     # Remove the old rule from Map._rules_by_endpoint.
-    #     app.url_map._rules_by_endpoint['static'] = []
-
-    #     # Add the new rule.
-    #     app.add_url_rule('{static_url_path}/<path:filename>'.format(static_url_path=app.static_url_path),
-    #                 endpoint='static',
-    #                 view_func=app.send_static_file)
 
 
 def setup_uploader(app):
