@@ -68,6 +68,10 @@ if __name__ == "__main__":  # pragma: no cover
         from gevent import monkey
         monkey.patch_all()
         from gevent.pywsgi import WSGIServer
+
+        print("app.config['URL_PREFIX'] = {}".format(app.config.get('URL_PREFIX')))
+        print("app.config['APPLICATION_ROOT'] = {}".format(app.config.get('APPLICATION_ROOT')))
+
         port = app.config['PORT']
         if app.config.get('URL_PREFIX'):
             app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=app.config['URL_PREFIX'])
