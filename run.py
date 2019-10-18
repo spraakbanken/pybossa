@@ -55,11 +55,13 @@ if __name__ == "__main__":  # pragma: no cover
         monkey.patch_all()
         from gevent.pywsgi import WSGIServer
 
-        print("app.config['APPLICATION_ROOT'] = {}".format(app.config.get('APPLICATION_ROOT')))
-
         port = app.config['PORT']
         if app.config.get('APPLICATION_ROOT'):
-            app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=app.config['APPLICATION_ROOT'])
+            app.wsgi_app = ReverseProxied(
+                app.wsgi_app,
+                script_name=app.config['APPLICATION_ROOT'],
+                scheme='https'
+            )
         WSGIServer(('0.0.0.0', port), app).serve_forever()
     else:
         # run in debug mode
