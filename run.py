@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with PYBOSSA. If not, see <http://www.gnu.org/licenses/>.
 import sys
+import datetime
+
+sys.stderr.write('{} >>> Pybossa Started\n'.format(datetime.datetime.now()))
 
 from pybossa.core import create_app
 
