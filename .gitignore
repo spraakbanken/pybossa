@@ -4,15 +4,6 @@
 *.pyc
 *.db
 settings_local.py
-
-# Virtual environments
-env/
-env3/
-venv/
-venv3/
-.venv/
-.venv3/
-
 doc/_build
 *.un~
 *.wsgi
@@ -56,3 +47,11 @@ pybossa/themes/*
 *.bak
 *.orig
 tags
+
+## Virtual environments
+env/
+env3/
+venv/
+venv3
+.venv/
+.venv3/
