@@ -58,7 +58,7 @@ def browse_tasks(project_id, limit=10, offset=0):
                FROM task, counter
                WHERE task.id=counter.task_id and task.project_id=:project_id
                GROUP BY task.id
-               ORDER BY task.id ASC LIMIT :limit OFFSET :offset
+               ORDER BY task.id ASC LIMIT :limit OFFSET :offset;
                ''')
     results = session.execute(sql, dict(project_id=project_id,
                                         limit=limit,
@@ -168,7 +168,7 @@ def n_volunteers(project_id):
 def n_task_runs(project_id):
     """Return number of task_runs of a project."""
     sql = text('''SELECT COUNT(task_run.id) AS n_task_runs FROM task_run
-                  WHERE task_run.project_id=:project_id''')
+                  WHERE task_run.project_id=:project_id;''')
 
     results = session.execute(sql, dict(project_id=project_id))
     n_task_runs = 0
@@ -190,7 +190,7 @@ def overall_progress(project_id):
 def last_activity(project_id):
     """Return last activity, date, from a project."""
     sql = text('''SELECT finish_time FROM task_run WHERE project_id=:project_id
-               ORDER BY finish_time DESC LIMIT 1''')
+               ORDER BY finish_time DESC LIMIT 1;''')
 
     results = session.execute(sql, dict(project_id=project_id))
     for row in results:
@@ -357,7 +357,7 @@ def n_count(category):
                AND project.published=true
                AND (project.info->>'passwd_hash') IS NULL
                GROUP BY project.id)
-               SELECT COUNT(*) FROM uniq
+               SELECT COUNT(*) FROM uniq;
                ''')
 
     results = session.execute(sql, dict(category=category))
