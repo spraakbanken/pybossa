@@ -58,7 +58,7 @@ def browse_tasks(project_id, limit=10, offset=0):
                FROM task, counter
                WHERE task.id=counter.task_id and task.project_id=:project_id
                GROUP BY task.id
-               ORDER BY task.id ASC LIMIT :limit OFFSET :offset
+               ORDER BY task.id ASC LIMIT :limit OFFSET :offset;
                ''')
     results = session.execute(sql, dict(project_id=project_id,
                                         limit=limit,
