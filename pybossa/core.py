@@ -36,18 +36,6 @@ from pybossa.messages import *
 from pybossa import util
 
 
-STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
-
-
-STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
-
-
-STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
-
-
-STATIC_URL_PATH = '/ws/tools/crowd-tasking/static'
-
-
 def create_app(run_as_server=True):
     """Create web app."""
     app = Flask(__name__)
