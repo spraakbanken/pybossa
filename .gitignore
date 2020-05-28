@@ -54,3 +54,6 @@ venv/
 venv3
 .venv/
 .venv3/
+
+## Pyenv settings
+.python-version
